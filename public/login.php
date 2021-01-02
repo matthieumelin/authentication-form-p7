@@ -55,10 +55,15 @@ if ($_POST) {
     $maxLength = [32, 190];
 
     $login = $_POST["login"];
-    $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
+    $password = $_POST["password"];
 
-    // verification du mot de passe
-    if (!password_verify($config["password"], $password)) {
+    // verification du login et mot de passe
+    if (strlen($login) > $maxLength[1] 
+    || strlen($password) < $minLength[0] 
+    || strlen($password) > $maxLength[0]
+    || preg_match('/[0-9]/', $password)
+    || preg_match('/[^A-Za-z0-9]/', $password)
+    || !password_verify($config["password"], password_hash($password, PASSWORD_BCRYPT))) {
         $errors["password"] = "Mot de passe ou login invalide";
     }
 
