@@ -18,8 +18,7 @@ $twig = new Environment($loader);
 // traitement des données
 if (!isset($_SESSION["login"])) {
     // renvoyer l'utilisateur vers la page connection
-    $url = "/login.php";
-    header("Location: {$url}", true, 301);
+    header("Location: login.php", true, 301);
     exit();
 }
 

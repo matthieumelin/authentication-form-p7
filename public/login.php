@@ -23,8 +23,6 @@ $twig = new Environment($loader, [
 // traitement des données
 $config = Yaml::parseFile(__DIR__ . "/../config/config.yaml");
 
-dump($config);
-
 // ajout de l'extension de debug
 $twig->addExtension(new DebugExtension());
 
@@ -36,6 +34,12 @@ $formData = [
 
 // instanciation d'un tableau d'erreur
 $errors = [];
+
+// si la session est déjà initier
+if (isset($_SESSION["login"])) {
+    // redirection vers la page private
+    header("Location: private.php");
+}
 
 // si le bouton est presser
 if ($_POST) {
@@ -51,10 +55,10 @@ if ($_POST) {
     $maxLength = [32, 190];
 
     $login = $_POST["login"];
-    $password = $_POST["password"];
+    $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
     // verification du mot de passe
-    if (!password_verify($password, $config["password"])) {
+    if (!password_verify($config["password"], $password)) {
         $errors["password"] = "Mot de passe ou login invalide";
     }
 
@@ -73,8 +77,7 @@ if ($_POST) {
         $_SESSION["password"] = $formData["password"];
 
         // redirection vers la page private
-        $url = "/private.php";
-        header("Location: {$url}");
+        header("Location: private.php");
     }
 }
 
